@@ -1,0 +1,10 @@
+spring:
+  application:
+    name: member-service
+#    config서버로부터 환경설정정보를 받아오기 위한 설정
+  config:
+    import: "optional:configserver:http://localhost:8888/"
+    fail-fast: true
+#    bus로부터 실시간 정보를 받아오기 위한 설정
+  bus:
+    enabled: true
