@@ -65,6 +65,7 @@ public class JwtAuthFilter implements GlobalFilter {
                     .build();
 
             // 다시 filter chain으로 되돌아 가는 로직.
+            // Spring Cloud Gateway에서는 사용자가 직접 필터 체인을 정의하지 않아도, 내부적으로 자동으로 정해진 순서의 필터 체인 검증
             return chain.filter(modifiedExchange);
         } catch (IllegalArgumentException | MalformedJwtException | ExpiredJwtException | SignatureException |
                  UnsupportedJwtException e) {
