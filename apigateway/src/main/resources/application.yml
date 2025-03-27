@@ -7,11 +7,13 @@ spring:
     name: api-gateway
   cloud:
     gateway:
-#      CORS 공통처리
+#      CORS 처리. 서비스모듈에서는 웹브라우저와 직접 통신하지 않으므로, cors처리 불필요.
       globalcors:
         cors-configurations:
           '[/**]':
-            allowedOrigins: 'http://localhost:3000'
+            allowedOrigins:
+              - 'http://localhost:3000'
+#              - 'https://www.example.com'
             allowedMethods: '*'
             allowedHeaders: '*'
             allowedCredentials: true

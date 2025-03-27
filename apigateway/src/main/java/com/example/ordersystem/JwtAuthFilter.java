@@ -9,8 +9,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
-
-import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 @Component
@@ -19,7 +17,6 @@ public class JwtAuthFilter implements GlobalFilter {
     @Value("${jwt.secretKey}")
     private String secretKey;
 
-//    JwtAuthFilter가 실행되는 시점에는 Spring Cloud Gateway의 StripPrefix=1이 적용된 후의 상태
     private static final List<String> ALLOWED_PATHS = List.of(
             "/member/create",
             "/member/doLogin",
@@ -32,7 +29,7 @@ public class JwtAuthFilter implements GlobalFilter {
         // token 검증
         System.out.println("token 검증 시작");
         String bearerToken = exchange.getRequest().getHeaders().getFirst(HttpHeaders.AUTHORIZATION);
-        String path = exchange.getRequest().getPath().toString();
+        String path = exchange.getRequest().getURI().getRawPath();
         // 인증이 필요 없는 경로는 필터를 통과
         if (ALLOWED_PATHS.contains(path)) {
             return chain.filter(exchange);
@@ -64,6 +61,7 @@ public class JwtAuthFilter implements GlobalFilter {
                     )
                     .build();
 
+            // Spring Cloud Gateway는 여러 필터를 GatewayFilterChain이라는 구조로 관리
             // 다시 filter chain으로 되돌아 가는 로직.
             return chain.filter(modifiedExchange);
         } catch (IllegalArgumentException | MalformedJwtException | ExpiredJwtException | SignatureException |
