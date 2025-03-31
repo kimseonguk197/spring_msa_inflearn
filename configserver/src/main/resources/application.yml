@@ -1,0 +1,35 @@
+server:
+  port: 8888
+
+spring:
+  cloud:
+    config:
+      server:
+        git:
+          uri: https://github.com/kimseonguk197/spring_cloud_msa_configs.git
+          clone-on-start: true
+          default-label: main
+#          private repo접근할 경우 token생성 후 사용
+          # username: msa_token
+          # password: xxxxxxx
+    bus:
+      enabled: true
+#      bus를 통해 실시간 config변경을 위해 rabbitmq를 bus 내부적으로 사용
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: guest
+    password: guest
+
+#actuator는 애플리케이션의 모니터링, 관리, 설정 변경 등을 위한 엔드포인트를 제공하는 기능
+#아래는 어떤 엔드포인트를 사용할지에 대한 설정
+management:
+  endpoints:
+    web:
+      exposure:
+#        config서버가 제공해주는 enpoint. 해당 메서드를 통해 실시간 config갱신
+        include: busrefresh, health #env, info, bus-env, refresh
+#       health에 대한 상세한 정보 필요시에 아래 내역 추가 설정
+  endpoint:
+    health:
+      show-details: always
